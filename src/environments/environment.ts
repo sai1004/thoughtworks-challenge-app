@@ -3,7 +3,8 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+    production: false,
+    API_END_POINT: 'https://geektrust.s3-ap-southeast-1.amazonaws.com',
 };
 
 /*

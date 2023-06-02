@@ -1,0 +1,113 @@
+<section class="profile__page">
+    <mat-toolbar color="primary">
+        <h4><strong> User Management </strong></h4>
+    </mat-toolbar>
+
+    <div class="profile__page-search--input">
+        <mat-form-field>
+            <mat-label>Search By</mat-label>
+            <input matInput [(ngModel)]="searchByQuery" placeholder="Ex. John" />
+        </mat-form-field>
+    </div>
+
+    <div class="profile__page-table" *ngIf="!isError">
+        <table
+            mat-table
+            [dataSource]="dataSource | searchFilter : searchByQuery"
+            class="mat-elevation-z8"
+            *ngIf="!(profileList.length <= 0 && isError == false)"
+        >
+            <ng-container matColumnDef="select">
+                <th mat-header-cell *matHeaderCellDef class="select__all--column">
+                    <div class="flex__row">
+                        <div>
+                            <mat-checkbox
+                                color="primary"
+                                name="isAllSelected"
+                                [(ngModel)]="isAllSelected"
+                                (change)="onSelectAll($event.checked)"
+                                matTooltip="SELECT ALL"
+                            >
+                            </mat-checkbox>
+                        </div>
+                        <div>
+                            <mat-icon class="delete__all--icon" (click)="deleteOnSelect()" matTooltip="DELETE ALL"
+                                >delete_outline</mat-icon
+                            >
+                        </div>
+                    </div>
+                </th>
+                <td mat-cell *matCellDef="let element">
+                    <mat-checkbox [(ngModel)]="element.isSelect" color="primary" matTooltip="SELECT"></mat-checkbox>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="id">
+                <th mat-header-cell *matHeaderCellDef>ID</th>
+                <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="email">
+                <th mat-header-cell *matHeaderCellDef>Email</th>
+                <td mat-cell *matCellDef="let element">
+                    <mat-form-field *ngIf="element.isEdit">
+                        <input matInput [(ngModel)]="element.email" />
+                    </mat-form-field>
+                    <span *ngIf="!element.isEdit">{{ element.email }}</span>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>Name</th>
+                <td mat-cell *matCellDef="let element">
+                    <mat-form-field *ngIf="element.isEdit">
+                        <input matInput [(ngModel)]="element.name" />
+                    </mat-form-field>
+                    <span *ngIf="!element.isEdit">{{ element.name }}</span>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="role">
+                <th mat-header-cell *matHeaderCellDef>Role</th>
+                <td mat-cell *matCellDef="let element">
+                    <mat-form-field *ngIf="element.isEdit">
+                        <input matInput [(ngModel)]="element.role" />
+                    </mat-form-field>
+                    <span *ngIf="!element.isEdit">{{ element.role }}</span>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                <td mat-cell *matCellDef="let element; let i = index">
+                    <mat-icon (click)="onEditRow(i)" *ngIf="!element.isEdit" matTooltip="EDIT">edit</mat-icon>
+                    <mat-icon (click)="onUpdate(i)" *ngIf="element.isEdit" matTooltip="SAVE">save</mat-icon>
+                    <mat-icon (click)="onDeleteRow(element)" matTooltip="DELETE">delete_outline</mat-icon>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+
+        <mat-paginator
+            *ngIf="!(profileList.length <= 0 && isError == false)"
+            [length]="paginationInfo.total"
+            [pageSize]="10"
+            [pageSizeOptions]="[5, 10, 25, 100]"
+            aria-label="Select page"
+            (page)="pageChanged($event)"
+            showFirstLastButtons
+        >
+        </mat-paginator>
+
+        <div *ngIf="profileList.length <= 0 && isError == false">
+            <div fxLayoutAlign="center center">
+                <figure>
+                    <img class="no__data-img" src="../../../../assets/icon/no-data.webp" alt="noData" />
+                    <figcaption>No Data Found</figcaption>
+                </figure>
+            </div>
+        </div>
+    </div>
+</section>
